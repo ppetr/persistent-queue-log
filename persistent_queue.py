@@ -54,9 +54,10 @@ class Queue(object):
   database file is opened and on exiting it it's closed.
   """
 
-  def __init__(self, database_filename):
+  def __init__(self, database_filename, wal_autocheckpoint=None):
     """Initialize the queue to use `database_filename` for storage."""
     self._database_filename = database_filename
+    self._wal_autocheckpoint = wal_autocheckpoint
     self._connection = None
     self._available = threading.Condition()
 
@@ -65,6 +66,9 @@ class Queue(object):
     self._connection = apsw.Connection(self._database_filename, flags=flags)
     cursor = self._connection.cursor()
     try:
+      if self._wal_autocheckpoint is not None:
+        cursor.execute("PRAGMA journal_mode=wal")
+        self._connection.wal_autocheckpoint(self._wal_autocheckpoint)
       cursor.execute(_CREATE_TABLE_LOG)
       cursor.execute(_CREATE_TABLE_CLIENTS)
     finally:
