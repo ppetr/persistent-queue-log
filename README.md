@@ -36,6 +36,10 @@ Non-goals:
 - SQLite3
 - [APSW](https://rogerbinns.github.io/apsw/) SQLite 3 wrapper
 
+On Debian based systems this can be installed (for Python 3) by
+
+    sudo apt-get install python3-apsw
+
 ## Implementation details
 
 The queue is implemented on top of a dedicated SQL database. APSW is used mainly
