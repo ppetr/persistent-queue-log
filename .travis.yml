@@ -1,0 +1,19 @@
+language: python
+env:
+  - PYLINT_ARGS="--pylint --pylint-rcfile=pylintrc"
+matrix:
+  include:
+    - python: 3.6
+    - python: 3.7
+    # pytest-pylint is broken on 3.8
+    - python: 3.8
+      env: PYLINT_ARGS=""
+before_install:
+  - python --version
+  - pip install -U pip
+  - pip install pytest pytest-pylint
+install:
+  - pip install apsw
+  - pip freeze
+script:
+  - pytest $PYLINT_ARGS

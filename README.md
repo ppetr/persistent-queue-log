@@ -2,6 +2,8 @@
 
 *Disclaimer: This is not an official Google product.*
 
+[![Build Status](https://travis-ci.com/ppetr/persistent-queue-log.svg?branch=master)](https://travis-ci.com/ppetr/persistent-queue-log)
+
 Persistent log/queue implemented in Python. Messages are kept indefinitely by
 default (as in a log). For each client it's last seen message is recorded,
 therefore each client receives each message just once (queue API).
