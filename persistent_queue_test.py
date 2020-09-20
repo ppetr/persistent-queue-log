@@ -54,10 +54,9 @@ class TestQueueSingleProcess(unittest.TestCase):
       for x in q.get():
         if x == 42:
           continue
-        elif x == 43:
+        if x == 43:
           break
-        else:
-          self.fail("Unexpected value: {}".format(x))
+        self.fail("Unexpected value: {}".format(x))
       self.assertEqual(list(q.get()), [43, 44])
 
   def test_get_blocking_wakes_up(self):

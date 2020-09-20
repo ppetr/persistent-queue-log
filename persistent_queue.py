@@ -46,6 +46,8 @@ _ADVANCE_CLIENT = """
 UPDATE clients SET acknowledged = MAX(acknowledged, :acknowledged) WHERE client_id = :clientid
 """
 
+# Keep the class below Python 2 compatible.
+# pylint: disable=useless-object-inheritance
 
 class Queue(object):
   """Persistent, disk-based queue.
