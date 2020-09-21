@@ -35,6 +35,7 @@ Non-goals:
 
 ## Dependencies
 
+- Python 3
 - SQLite3
 - [APSW](https://rogerbinns.github.io/apsw/) SQLite 3 wrapper
 
