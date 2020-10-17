@@ -139,11 +139,12 @@ class Queue:
 
     Yields: messages currently available in the queue for `client`.
     """
-    if client is None:
-      client = ""
-    client = str(client)
+    client = "" if client is None else str(client)
     self._execute(_INITIALIZE_CLIENT, {"clientid": client})
     for (rowid, data) in self._execute_query(_QUERY, {"clientid": client}):
+      # For data stored by Python 2:
+      if isinstance(data, str):
+        data = data.encode(encoding="ascii", errors="ignore")
       yield pickle.loads(data)
       self._execute(_ADVANCE_CLIENT, {
           "clientid": client,
