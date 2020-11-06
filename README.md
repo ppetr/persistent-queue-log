@@ -13,11 +13,11 @@ Goals:
   - "Put" durability: Once an message is stored in the queue, it remains there
     even in the case of a crash or a power failure.
   - "Get" durability: An message is considered to be consumed only when the
-    caller acknowledges it has fully processed it. If a crash occurs before such
-    an acknowledgement, the message is considered unprocessed and is issued
-    passed to the client again.
-  - Allows multiple clients (distinguished by names) to process messages
-    independently. Acknowledging an message by one client still keeps it
+    caller that acknowledged it has fully processed it. If a crash occurs before
+    such an acknowledgement, the message is considered unprocessed and is passed
+    to the client again.
+  - Allows multiple clients (distinguished by a name) to process messages
+    independently. Acknowledging a message by one client still keeps it
     available for another one.
   - Keep data possibly indefinitely.
   - Thread-safe interface.
