@@ -79,8 +79,9 @@ class TestQueueSingleProcess(unittest.TestCase):
         # Let's give it a short grace period.
         start = time.time()
         c.result()
-        self.assertLess(
-            time.time() - start, 1, msg="Consumer wasn't triggered soon enough")
+        self.assertLess(time.time() - start,
+                        1,
+                        msg="Consumer wasn't triggered soon enough")
 
   def test_concurrent_load(self):
     count = 20

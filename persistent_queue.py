@@ -11,11 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Durable, persistent log / FIFO queue."""
 
 import pickle
 import threading
+from typing import Any, Generator, Optional
 
 import apsw
 
@@ -102,7 +102,7 @@ class Queue:
     with self._available:
       self._available.notify_all()
 
-  def put(self, message):
+  def put(self, message: Any) -> None:
     """Store `message` in the queue.
 
     After the method returns, it is guaranteed that the message has been
@@ -116,30 +116,30 @@ class Queue:
     self._execute(_INSERT, {"data": data})
     self.trigger()
 
-  def get(self, client=None):
+  def get(self, client: Optional[str] = None) -> Generator[Any, None, None]:
     """Fetch messages in the queue not yet processed by `client`.
 
-    An message is acknowledged by the next call to 'next' on the returned
+    A message is acknowledged by the next call to 'next' on the returned
     generator. In practice this means that when processing the generator in a
     `for` loop, the body of the loop needs to finish without a `break` or an
     exception in order to acknowledge the current message. This ensures that
     messages don't get lost if their processing is interrupted.
 
     This can be also used to peek for the next element in the queue without
-    consuming it, for example:
+    consuming it, for example::
 
       for message in queue.get():
-        # An message is available, do something with it.
+        # A message is available, do something with it.
         break  # By terminating the loop the message won't be acknowledged.
 
     Args:
       client: A string that identifies this client. Two clients with a
-        different ID consume the queue independently. If `None`, an empty string
-        is used.
+        different ID consume the queue independently. If `None`, an empty
+        string is used.
 
     Yields: messages currently available in the queue for `client`.
     """
-    client = "" if client is None else str(client)
+    client: str = "" if client is None else str(client)
     self._execute(_INITIALIZE_CLIENT, {"clientid": client})
     for (rowid, data) in self._execute_query(_QUERY, {"clientid": client}):
       # For data stored by Python 2:
@@ -151,7 +151,9 @@ class Queue:
           "acknowledged": rowid
       })
 
-  def get_blocking(self, client=None, tick=None):
+  def get_blocking(self,
+                   client: Optional[str] = None,
+                   tick=None) -> Generator[Any, None, None]:
     """Fetch messages in the queue as they become available to `client`.
 
     Very similar to `get`, but the generator never returns and waits for new
@@ -160,8 +162,8 @@ class Queue:
 
     Args:
       client: A string that identifies this client. Two clients with a
-        different ID consume the queue independently. If `None`, an empty string
-        is used.
+        different ID consume the queue independently. If `None`, an empty
+        string is used.
       tick: How often (in seconds) to query the database for new data. If
         messages are inserted in the queue from the same process, blocked
         threads are woken up automatically. But if they are inserted from a
